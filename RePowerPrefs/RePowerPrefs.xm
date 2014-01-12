@@ -8,11 +8,7 @@
 
 #import "../Headers/Preferences/PSListController.h"
 
-@interface RePowerPrefsListController : PSListController{
-	NSArray *_specifiers;
-}
-
--(NSArray *)loadSpecifiersFromPlistName:(NSString *)name target:(id)target;
+@interface RePowerPrefsListController : PSListController
 @end
 
 @implementation RePowerPrefsListController
