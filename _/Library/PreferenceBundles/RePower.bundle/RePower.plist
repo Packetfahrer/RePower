@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>RePower</string>
+			<key>footerText</key>
+			<string>© 2013—2014, HASHBANG Productions</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>ws.hbang.repower</string>
+			<key>key</key>
+			<string>doubletap</string>
+			<key>label</key>
+			<string>Disable double tap</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+            <string>PSLinkCell</string>
+            <key>detail</key>
+            <string>HBTSAboutListController</string>
+            <key>isController</key>
+            <true/>
+            <key>label</key>
+            <string>About</string>
+        </dict>
+	</array>
+	<key>title</key>
+	<string>RePower</string>
+</dict>
+</plist>
