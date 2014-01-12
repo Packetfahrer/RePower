@@ -1,0 +1,10 @@
+Package: ws.hbang.repower
+Name: PowerDown Info
+Depends: mobilesubstrate
+Architecture: iphoneos-arm
+Description: An awesome Cydia Substrate tweak!
+Maintainer: Haifisch
+Author: Haifisch
+Section: Tweaks
+Version: 0.0.1-251
+Installed-Size: 280

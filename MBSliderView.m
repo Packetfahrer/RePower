@@ -358,7 +358,7 @@ static const CGFloat gradientDimAlpha = 0.5;
 		animationTimerCount = 0;
 		[self setGradientLocations:0];
 		animationTimer = [NSTimer 
-						   scheduledTimerWithTimeInterval:0.8/FRAMES_PER_SEC 
+						   scheduledTimerWithTimeInterval:0.9/FRAMES_PER_SEC 
 						   target:self 
 						   selector:@selector(animationTimerFired:) 
 						   userInfo:nil 

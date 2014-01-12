@@ -8,9 +8,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>RePower</string>
-			<key>footerText</key>
-			<string>© 2013—2014, HASHBANG Productions</string>
+			<string>RePower New layout options</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -23,6 +21,32 @@
 			<string>safemodeInstead</string>
 			<key>label</key>
 			<string>Safemode slider</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>RePower Old Layout Options</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>ws.hbang.repower</string>
+			<key>key</key>
+			<string>oldLayout</string>
+			<key>label</key>
+			<string>Enable old layout</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>RePower</string>
+			<key>footerText</key>
+			<string>© 2013—2014, HASHBANG Productions</string>
 		</dict>
 		<dict>
 			<key>cell</key>
