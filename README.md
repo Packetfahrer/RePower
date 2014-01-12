@@ -1,13 +1,11 @@
 RePower
 =======
 
-RePower
-
-So, this code may be or may not be horrible. I'm sorry. I'm lazy. 
-
-~Haifisch
+A more powerful power down screen.
+- **Haifisch**: Main developer
+- **insanj**: Main developer helper
 
 Todo
-====
+-------
 
 - Make TPBottomLockBar happen

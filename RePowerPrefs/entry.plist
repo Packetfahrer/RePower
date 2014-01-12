@@ -1,0 +1,10 @@
+{
+    entry = {
+		bundle = RePowerPrefs;
+		cell = PSLinkCell;
+		detail = RePowerPrefsListController;
+		icon = icon.png;
+		isController = 1;
+		label = "RePower";
+    };
+}

@@ -1,9 +1,9 @@
 Package: ws.hbang.repower
-Name: PowerDown Info
+Name: RePower
 Depends: mobilesubstrate
-Version: 0.0.1
+Version: 1.1
 Architecture: iphoneos-arm
-Description: An awesome Cydia Substrate tweak!
-Maintainer: Haifisch
-Author: Haifisch
+Description: A more powerful power down screen.
+Maintainer: HASHBANG Productions <fontee@hbang.ws>
+Author: HASHBANG Productions <fontee@hbang.ws>
 Section: Tweaks
