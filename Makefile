@@ -11,7 +11,7 @@ RePower_CFLAGS = -fobjc-arc
 RePower_FILES = $(wildcard *.x) $(wildcard *.m)
 RePower_FRAMEWORKS = Foundation UIKit QuartzCore
 RePower_PRIVATE_FRAMEWORKS = TelephonyUI CoreGraphics
-
+RePower_LDFLAGS = -Ltheos/lib
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 

@@ -17,14 +17,15 @@
 	For friendly neighbourhood developer,
 		Haifisch
 */
-
+#include <notify.h>
+#import <substrate.h>
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
 #import "TeleponyUI/TPBottomLockBar.h"
 #import <UIKit/UIKit.h>
-#include <substrate.h>
 #import "CKBlurView.h"
 #import "MBSliderView.h"
+#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 // Header stuff I didn't put into header files
 // Im so sorry
 @interface SBUIController 
@@ -51,6 +52,11 @@
     _Bool _hiddenLockScreenForeground;
     struct CGPoint _slideGestureInitialPoint;
 }
+- (void)listSubviewsOfView:(UIView *)view;
+-(void)safemode;
+-(BOOL)isSafemode;
+-(void)respring;
+-(void)reboot;
 - (BOOL)charging;
 - (float)batteryLevel;
 - (BOOL)fullyCharged;
@@ -90,65 +96,16 @@
 UIView *firstButton;
 UIView *secondButton;
 
-UILabel *uptimeLabel;
-NSTimer *batterytimer;
-
-%new
-- (float)batteryLevel {
-    @try {
-        UIDevice *Device = [UIDevice currentDevice];
-        Device.batteryMonitoringEnabled = YES;
-        float BatteryLevel = 0.0;
-        float BatteryCharge = [Device batteryLevel];
-        if (BatteryCharge > 0.0f) {
-            BatteryLevel = BatteryCharge * 100;
-        } else {
-            return -1;
-        }
-        
-        // Output the battery level
-        return BatteryLevel;
-    }
-    @catch (NSException *exception) {
-        // Error out
-        return -1;
-    }
-}
-%new
-- (BOOL)charging {
-    @try {
-        UIDevice *Device = [UIDevice currentDevice];
-        Device.batteryMonitoringEnabled = YES;
-        if ([Device batteryState] == UIDeviceBatteryStateCharging || [Device batteryState] == UIDeviceBatteryStateFull) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    @catch (NSException *exception) {
-        return false;
-    }
-}
-%new
-- (BOOL)fullyCharged {
-    @try {
-        UIDevice *Device = [UIDevice currentDevice];
-        Device.batteryMonitoringEnabled = YES;
-        if ([Device batteryState] == UIDeviceBatteryStateFull) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    @catch (NSException *exception) {
-        // Error out
-        return false;
-    }
-}
+CKBlurView *blurViewGreen;
+CKBlurView *blurViewOrange;
 
 %new 
--(BOOL)doesDoubleTap{
-	return [[[NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/ws.hbang.repower.plist"]] objectForKey:@"doubletap"] boolValue];
+-(BOOL)isEnabled{
+	return [[[NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/ws.hbang.repower.plist"]] objectForKey:@"isEnabled"] boolValue];
+}
+%new 
+-(BOOL)isSafemode{
+	return [[[NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/ws.hbang.repower.plist"]] objectForKey:@"safemodeInstead"] boolValue];
 }
 %new
 -(void)respring{
@@ -159,86 +116,109 @@ NSTimer *batterytimer;
 	[(SpringBoard *)[UIApplication sharedApplication] _rebootNow];
 }
 %new
+-(void)safemode{
+	system("killall -SEGV SpringBoard");
+}
+%new
 - (void) sliderDidSlide:(MBSliderView *)slideView {
     NSLog(@"%@", slideView);
-    if ([slideView.text isEqual:@"Slide to reboot"])
+    if ([slideView.text isEqual:@"slide to reboot"])
     {
-    	NSLog(@"Rebooting");
+    	[self reboot];
+    }else if ([slideView.text isEqual:@"slide to respring"])
+    {
+    	[self respring];
+    }else if ([slideView.text isEqual:@"slide to safemode"])
+    {
+    	[self safemode];
+    }
+}
+%new 
+- (void)listSubviewsOfView:(UIView *)view {
+
+    // Get the subviews of the view
+    NSArray *subviews = [view subviews];
+
+    // Return if there are no subviews
+    if ([subviews count] == 0) return;
+
+    for (UIView *subview in subviews) {
+
+        // Do what you want to do with the subview
+        NSLog(@"%f", subview.bounds.origin.y);
+
+        // List the subviews of subview
+        [self listSubviewsOfView:subview];
     }
 }
 - (void)animateIn{
-	//[UIDevice currentDevice].batteryMonitoringEnabled = YES;
-    
-    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(batteryStateChanged:) name:@"UIDeviceBatteryStateDidChangeNotification" object:[UIDevice currentDevice]];
-    //batterytimer = [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(batteryLevelChanged) userInfo:nil repeats:YES];
-	
+	[self listSubviewsOfView:self];
 	// First button view
-	firstButton = [[UIView alloc] initWithFrame:CGRectMake(16,135,288,65)];
+	firstButton = [[UIView alloc] initWithFrame:CGRectMake(16,183.5,288,65)];
 	firstButton.layer.cornerRadius = 5;
 	firstButton.layer.masksToBounds = YES;
 	firstButton.opaque = NO;
-	firstButton.alpha = 0.8;
-    firstButton.backgroundColor = [UIColor colorWithRed:184.0/255.0 green:111.0/255.0 blue:39.0/255.0 alpha:0.9];
+	firstButton.backgroundColor = [UIColor clearColor];
     // Second button view
-	secondButton = [[UIView alloc] initWithFrame:CGRectMake(16,220,288,65)];
+	secondButton = [[UIView alloc] initWithFrame:CGRectMake(16,319.5,288,65)];
 	secondButton.layer.cornerRadius = 5;
 	secondButton.layer.masksToBounds = YES;
 	secondButton.opaque = NO;
-	secondButton.alpha = 0.8;
-    secondButton.backgroundColor = [UIColor colorWithRed:70.0/255.0 green:160.0/255.0 blue:46.0/255.0 alpha:0.9];
-    // Uptime text label
-	uptimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,0,firstButton.bounds.size.width,30)];
-	uptimeLabel.textAlignment = NSTextAlignmentCenter;
-	uptimeLabel.textColor = [UIColor whiteColor];
-	[uptimeLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17]];
-	if ([self charging])
-	{
-		uptimeLabel.text = [NSString stringWithFormat:@"Charging at %f", [self batteryLevel]];
-	}
-	// Respring Button
-	UIButton *respringBTN = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-	if (![self doesDoubleTap])
-	{	
-		[respringBTN setTitle:@"Double tap to Respring" forState:UIControlStateNormal];
-		UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(respring)];
-		tapRecognizer.numberOfTapsRequired = 2;
-		tapRecognizer.numberOfTouchesRequired = 1;
-		[respringBTN addGestureRecognizer:tapRecognizer];
-	}else {
-		[respringBTN setTitle:@"Tap to Respring" forState:UIControlStateNormal];
-		[respringBTN addTarget:self action:@selector(respring) forControlEvents:UIControlEventTouchDown];	
-	}
-	respringBTN.frame = CGRectMake(0, 0, secondButton.bounds.size.width, secondButton.bounds.size.height);
-	[respringBTN.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:25]];
-	[respringBTN setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    secondButton.backgroundColor = [UIColor clearColor];
 
-	// Reboot button
-	UIButton *rebootBTN = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-	if (![self doesDoubleTap])
-	{
-		[rebootBTN setTitle:@"Double tap to Reboot" forState:UIControlStateNormal];
-		UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(reboot)];
-		tapRecognizer.numberOfTapsRequired = 2;
-		tapRecognizer.numberOfTouchesRequired = 1;
-		[rebootBTN addGestureRecognizer:tapRecognizer];
-	}else {
-		[rebootBTN setTitle:@"Tap to Reboot" forState:UIControlStateNormal];
-		[rebootBTN addTarget:self action:@selector(reboot) forControlEvents:UIControlEventTouchDown];
-	}
-	rebootBTN.frame = CGRectMake(0, 0, firstButton.bounds.size.width, firstButton.bounds.size.height);
-	[rebootBTN.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:25]];
-	[rebootBTN setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+	UIColor *blurTint = UIColorFromRGB(0x8D5E21);
+	UIColor *blurTintGreen = UIColorFromRGB(0x3D8230);
+	UIColor *blurTintGrey = UIColorFromRGB(0x4F5F79);
+
+	const CGFloat *rgb = CGColorGetComponents(blurTint.CGColor);
+	const CGFloat *rgbGreen = CGColorGetComponents(blurTintGreen.CGColor);
+	const CGFloat *rgbGrey = CGColorGetComponents(blurTintGrey.CGColor);
+
+    CAFilter *tintFilter = [CAFilter filterWithName:@"colorAdd"];
+    CAFilter *tintFilterGreen = [CAFilter filterWithName:@"colorAdd"];
+    CAFilter *tintFilterGrey = [CAFilter filterWithName:@"colorAdd"];
+
+    [tintFilter setValue:@[@(rgb[0]), @(rgb[1]), @(rgb[2]), @(CGColorGetAlpha(blurTint.CGColor))] forKey:@"inputColor"];
+    [tintFilterGreen setValue:@[@(rgbGreen[0]), @(rgbGreen[1]), @(rgbGreen[2]), @(CGColorGetAlpha(blurTintGreen.CGColor))] forKey:@"inputColor"];
+    [tintFilterGrey setValue:@[@(rgbGrey[0]), @(rgbGrey[1]), @(rgbGrey[2]), @(CGColorGetAlpha(blurTintGrey.CGColor))] forKey:@"inputColor"];
+
+	// Blur views
+	blurViewOrange = [[CKBlurView alloc] initWithFrame:firstButton.bounds];
+	[blurViewOrange setTintColorFilter:tintFilter];
+	blurViewOrange.blurRadius = 10.0f;
+    blurViewOrange.blurCroppingRect = blurViewOrange.frame;
+    blurViewOrange.alpha = 1.f;
+	[firstButton addSubview:blurViewOrange];
+	[blurViewOrange setHidden:NO];
+
+	blurViewGreen = [[CKBlurView alloc] initWithFrame:secondButton.bounds];
+	[blurViewGreen setTintColorFilter:tintFilterGreen];
+	blurViewGreen.blurRadius = 10.0f;
+    blurViewGreen.blurCroppingRect = blurViewGreen.frame;
+    blurViewGreen.alpha = 1.f;
+	[secondButton addSubview:blurViewGreen];
+	[blurViewGreen setHidden:NO];
+
 	// Slide to views
-	MBSliderView *s1 = [[MBSliderView alloc] initWithFrame:CGRectMake(15,0, firstButton.frame.size.width, firstButton.frame.size.height)];
+	MBSliderView *s1 = [[MBSliderView alloc] initWithFrame:CGRectMake(20,0, firstButton.frame.size.width, firstButton.frame.size.height)];
     [s1 setText:@"slide to reboot"]; // set the label text
     [s1 setDelegate:self]; // set the MBSliderView delegate
+    MBSliderView *s2 = [[MBSliderView alloc] initWithFrame:CGRectMake(20,0, secondButton.frame.size.width, secondButton.frame.size.height)];
+    if ([self isSafemode])
+    {
+    	[s2 setText:@"slide to safemode"];
+    }else {
+    	[s2 setText:@"slide to respring"];
+    }
+    [s2 setDelegate:self]; // set the MBSliderView delegate
 	// Add views
 	[self addSubview:firstButton];
 	[self addSubview:secondButton];
 	//[debugView addSubview:uptimeLabel];
 	[firstButton addSubview:s1];
 	//[firstButton addSubview:rebootBTN];
-	[secondButton addSubview:respringBTN];
+	[secondButton addSubview:s2];
+		
 	// Process nice fade in
 	CATransition *applicationLoadViewIn =[CATransition animation];
 	[applicationLoadViewIn setDuration:0.75];

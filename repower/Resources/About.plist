@@ -13,10 +13,6 @@
 			<string>© 2013—2014, HASHBANG Productions</string>
 		</dict>
 		<dict>
-			<key>cellClass</key>
-			<string>HBTSHeaderCell</string>
-		</dict>
-		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 		</dict>

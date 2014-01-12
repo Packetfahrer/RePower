@@ -19,6 +19,7 @@ static const CGFloat gradientDimAlpha = 0.5;
 - (void) loadContent;
 - (UIImage *) thumbWithColor:(UIColor*)color;
 - (UIImage *) clearPixel;
+- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize;
 @end
 
 @implementation MBSliderView
@@ -80,7 +81,7 @@ static const CGFloat gradientDimAlpha = 0.5;
         _slider.frame = sliderFrame;
         _slider.center = ctr;
         _slider.backgroundColor = [UIColor clearColor];
-        UIImage *thumbImage = [UIImage imageWithContentsOfFile:@"/Library/PreferenceBundles/RePower.bundle/chevron.png"];
+        UIImage *thumbImage = [self imageWithImage:[UIImage imageWithContentsOfFile:@"/Library/PreferenceBundles/RePower.bundle/chevron.png"] scaledToSize:CGSizeMake(13,28)];
         [_slider setThumbImage:thumbImage forState:UIControlStateNormal];
 
         UIImage *clearImage = [self clearPixel];
@@ -189,6 +190,14 @@ static const CGFloat gradientDimAlpha = 0.5;
 
 - (void) setThumbColor:(UIColor *)color {
     [_slider setThumbImage:[self thumbWithColor:color] forState:UIControlStateNormal];
+}
+- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
+    //UIGraphicsBeginImageContext(newSize);
+    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();    
+    UIGraphicsEndImageContext();
+    return newImage;
 }
 
 - (UIImage *) thumbWithColor:(UIColor*)color {
@@ -349,7 +358,7 @@ static const CGFloat gradientDimAlpha = 0.5;
 		animationTimerCount = 0;
 		[self setGradientLocations:0];
 		animationTimer = [NSTimer 
-						   scheduledTimerWithTimeInterval:1.0/FRAMES_PER_SEC 
+						   scheduledTimerWithTimeInterval:0.8/FRAMES_PER_SEC 
 						   target:self 
 						   selector:@selector(animationTimerFired:) 
 						   userInfo:nil 

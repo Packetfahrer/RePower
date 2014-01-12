@@ -20,9 +20,9 @@
 			<key>defaults</key>
 			<string>ws.hbang.repower</string>
 			<key>key</key>
-			<string>doubletap</string>
+			<string>safemodeInstead</string>
 			<key>label</key>
-			<string>Disable double tap</string>
+			<string>Safemode slider</string>
 		</dict>
 		<dict>
 			<key>cell</key>
