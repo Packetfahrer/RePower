@@ -7,7 +7,7 @@
 //
 /* 
 	Todo:
-		Implement CKBlurView
+		Implement _UIBackdropView
 		Battery time left
 		Slide to ACTION
 	Note to reader:
